@@ -7,8 +7,8 @@ data class Item(
     val imageUrl: String = "",
     val endereco: String = "",
     val userId: String = "",
-    val latitude: String = "",
-    val longitude: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
     var distancia: String = ""
 )
 

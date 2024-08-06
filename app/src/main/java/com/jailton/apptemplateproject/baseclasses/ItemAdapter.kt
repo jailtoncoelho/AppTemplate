@@ -87,12 +87,12 @@ class StoreAdapter(
             latitude = userLocation.latitude
             longitude = userLocation.longitude
         }
-        if (store.latitude.isEmpty() || store.longitude.isEmpty()) {
+        if (store.latitude.toInt() == 0 && store.longitude.toInt() == 0) {
             return ""
         }
         val storeLocation = Location("").apply {
-            latitude = store.latitude.toDouble()
-            longitude = store.longitude.toDouble()
+            latitude = store.latitude
+            longitude = store.longitude
         }
         val distanceInMeters = userLocation.distanceTo(storeLocation)
         val distanceInKm = distanceInMeters / 1000

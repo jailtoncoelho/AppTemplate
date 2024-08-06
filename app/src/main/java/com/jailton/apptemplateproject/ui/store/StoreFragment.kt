@@ -139,7 +139,7 @@ class StoreFragment : Fragment() {
             return
         }
         var user = MainActivity.usuarioLogado
-        val store = Item("", name, email, imageUrl, endereco, user?.uid.toString(),"","", "")
+        val store = Item("", name, email, imageUrl, endereco, user?.uid.toString(),0.0,0.0, "")
 
         val database: FirebaseDatabase =
             FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/")

@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,6 +35,10 @@ import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Item
 import com.jailton.apptemplateproject.baseclasses.StoreAdapter
 import com.jailton.apptemplateproject.databinding.FragmentHomeBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class HomeFragment : Fragment() {
@@ -44,6 +49,9 @@ class HomeFragment : Fragment() {
     private lateinit var currentAddressTextView: TextView
     private lateinit var database: DatabaseReference
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+
 
 
     companion object {
@@ -153,41 +161,48 @@ class HomeFragment : Fragment() {
             return
         }
 
-        val locationRequest = LocationRequest.create().apply {
-            interval = 5000 // Intervalo de 5 segundos
-            fastestInterval = 5000 // Intervalo mais rápido de 5 segundos
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.let {
-                    fetchStores(location)
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Não foi possível obter a localização", Toast.LENGTH_SHORT).show()
-            }
-
-        fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
                     displayAddress(location)
+                    fetchStores(location)
                 }
             }
-        }, Looper.getMainLooper())
+        }
+
+        locationRequest = LocationRequest.create().apply {
+            interval = 30000 // Intervalo em milissegundos para atualizações de localização
+            fastestInterval = 30000 // O menor intervalo de tempo que você deseja receber atualizações de localização
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
     }
+
+
 
 
     private fun displayAddress(location: Location) {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        if (addresses != null && addresses.isNotEmpty()) {
-            val address = addresses[0].getAddressLine(0)
-            currentAddressTextView.text = address
-        } else {
-            currentAddressTextView.text = "Address not found"
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val address = addresses?.firstOrNull()?.getAddressLine(0) ?: "Address not found"
+                withContext(Dispatchers.Main) {
+                    currentAddressTextView.text = address
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    currentAddressTextView.text = "Error: ${e.message}"
+                }
+            }
         }
+
+
     }
 
 
