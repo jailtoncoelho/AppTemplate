@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.jailton.apptemplateproject"
+    namespace = "com.ifpr.app_reuse"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.jailton.apptemplateproject"
+        applicationId = "com.ifpr.app_reuse"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

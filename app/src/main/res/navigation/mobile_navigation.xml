@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.jailton.apptemplateproject.ui.home.HomeFragment"
+        android:name="com.ifpr.app_reuse.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_perfil_usuario"
-        android:name="com.jailton.apptemplateproject.ui.usuario.PerfilUsuarioFragment"
+        android:name="com.ifpr.app_reuse.ui.usuario.PerfilUsuarioFragment"
         android:label="@string/title_perfil_usuario"
         tools:layout="@layout/activityt_cadastro_usuario" />
 
     <fragment
         android:id="@+id/navigation_item"
-        android:name="com.jailton.apptemplateproject.ui.store.StoreFragment"
+        android:name="com.ifpr.app_reuse.ui.store.DenunciaFragment"
         android:label="@string/title_store"
-        tools:layout="@layout/fragment_store" />
+        tools:layout="@layout/fragment_denuncia" />
 </navigation>
