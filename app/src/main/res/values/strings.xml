@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Re-USE</string>
+    <string name="app_name">Catálogo AutoTB</string>
     <string name="title_home">Home</string>
     <string name="title_login">Login</string>
     <string name="title_usuario">Usuario</string>
     <string name="title_login_usuario">Login Usuário</string>
     <string name="title_cadastro_usuario">Cadastro Usuário</string>
     <string name="title_perfil_usuario">Perfil Usuário</string>
-    <string name="title_store">Denúncia</string>
+    <string name="title_store">Store</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
