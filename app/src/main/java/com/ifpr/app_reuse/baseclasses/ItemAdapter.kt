@@ -31,7 +31,8 @@ class StoreAdapter(
         val denuncia = storeList[position]
         holder.storeNameTextView.text = denuncia.name
         holder.storeEnderecoTextView.text = denuncia.endereco
-        //holder.storeDistanceTextView.text = getDistanceToStore(denuncia)
+        holder.denunciaDescricaoTextView.text = denuncia.descricao
+        holder.storeDistanceTextView.text = getDistanceToStore(denuncia)
 
         if (holder.storeDistanceTextView.text.isEmpty()) {
             holder.storeDistanceTextView.visibility = View.GONE
@@ -45,7 +46,7 @@ class StoreAdapter(
             holder.wazeIconImageView.visibility = View.GONE
         } else {
             holder.mapIconImageView.visibility = View.VISIBLE
-            holder.wazeIconImageView.visibility = View.VISIBLE
+            holder.wazeIconImageView.visibility = View.GONE
         }
         holder.mapIconImageView.setOnClickListener {
             val endereco = holder.storeEnderecoTextView.text.toString()
@@ -104,8 +105,9 @@ class StoreAdapter(
 
     class StoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val storeImageView: ImageView = itemView.findViewById(R.id.storeImageView)
-        val storeNameTextView: TextView = itemView.findViewById(R.id.storeNameTextView)
-        val storeEnderecoTextView: TextView = itemView.findViewById(R.id.storeEnderecoTextView)
+        val storeNameTextView: TextView = itemView.findViewById(R.id.denunciaTituloTextView)
+        val denunciaDescricaoTextView: TextView = itemView.findViewById(R.id.denunciaDescricaoTextView)
+        val storeEnderecoTextView: TextView = itemView.findViewById(R.id.denunciaEnderecoTextView)
         val storeDistanceTextView: TextView = itemView.findViewById(R.id.storeDistanceTextView)
         val mapIconImageView: ImageView = itemView.findViewById(R.id.mapIconImageView)
         val wazeIconImageView: ImageView = itemView.findViewById(R.id.wazeIconImageView)

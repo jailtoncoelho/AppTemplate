@@ -45,7 +45,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = "fcm_default_channel"
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_auto_catalogo)
+            .setSmallIcon(R.drawable.ic_denuncia)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(messageBody)
             .setAutoCancel(true)

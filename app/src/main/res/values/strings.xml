@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Re-USE</string>
     <string name="title_home">Home</string>
+    <string name="title_denuncia">Denúncia</string>
+    <string name="title_pesquisar">Pesquisar</string>
+    <string name="title_chat">Chat</string>
     <string name="title_login">Login</string>
     <string name="title_usuario">Usuario</string>
     <string name="title_login_usuario">Login Usuário</string>

@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomMenu">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_denuncia"
         android:icon="@drawable/ic_home"
         android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_pesquisar"
+        android:icon="@drawable/ic_pesquisar"
+        android:title="@string/title_pesquisar" />
+
+    <item
+        android:id="@+id/navigation_chat"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/title_chat" />
 
     <item
         android:id="@+id/navigation_perfil_usuario"
         android:icon="@drawable/ic_usuario"
         android:title="@string/title_usuario" />
-
-    <item
-        android:id="@+id/navigation_item"
-        android:icon="@drawable/ic_store"
-        android:title="@string/title_store" />
 
 </menu>
