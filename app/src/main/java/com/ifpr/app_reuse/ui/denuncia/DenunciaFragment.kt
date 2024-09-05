@@ -1,11 +1,8 @@
 package com.ifpr.app_reuse.ui.denuncia
 
-import android.R.attr.bitmap
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,13 +14,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.Toast
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -45,7 +39,7 @@ class DenunciaFragment : Fragment() {
 
     private lateinit var navController: NavController
     private lateinit var storeImageView: ImageView
-    private lateinit var storeNameEditText: EditText
+    private lateinit var storeTituloEditText: EditText
     private lateinit var storeDescricaoEditText: EditText
     private lateinit var storeEnderecoEditText: EditText
     private lateinit var switchDenunciaAnonima: Switch
@@ -72,10 +66,10 @@ class DenunciaFragment : Fragment() {
         // Initialize NavController
         navController = findNavController()
 
-        storeImageView = view.findViewById(R.id.image_store)
-        storeNameEditText = view.findViewById(R.id.edit_text_denuncia_titulo)
+        storeImageView = view.findViewById(R.id.image_denuncia)
+        storeTituloEditText = view.findViewById(R.id.edit_text_denuncia_titulo)
         storeDescricaoEditText = view.findViewById(R.id.edit_text_denuncia_descricao)
-        storeEnderecoEditText = view.findViewById(R.id.edit_text_store_endereco)
+        storeEnderecoEditText = view.findViewById(R.id.edit_text_denuncia_endereco)
         switchDenunciaAnonima = view.findViewById(R.id.switchDenunciaAnonima)
         selectImageButton = view.findViewById(R.id.button_select_image)
         registerStoreButton = view.findViewById(R.id.button_register_denuncia)
@@ -93,14 +87,38 @@ class DenunciaFragment : Fragment() {
         }
 
         registerStoreButton.setOnClickListener {
-            val name = storeNameEditText.text.toString()
-            val denuncia = storeDescricaoEditText.text.toString()
+            val titulo = storeTituloEditText.text.toString()
+            val descricao = storeDescricaoEditText.text.toString()
 
-            if (name.isEmpty() || denuncia.isEmpty() || imageUri == null) {
+            if (titulo.isEmpty() || descricao.isEmpty() || imageUri == null) {
                 Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                uploadImageToFirebase()
+
+                // Exibe o ProgressDialog enquanto o upload está em andamento
+                val progressDialog = ProgressDialog(context)
+                progressDialog.setTitle("Enviando...")
+                progressDialog.setCancelable(false)
+                progressDialog.show()
+
+
+                try {
+                    // Chama o método de upload da imagem
+                    uploadImageToFirebase()
+                    // Fecha o ProgressDialog ao término do upload
+                    progressDialog.dismiss()
+
+                } catch (e: Exception) {
+                    // Fecha o ProgressDialog em caso de erro
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        context,
+                        "Erro ao cadastrar a nova denúncia: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    e.printStackTrace()
+                }
+
             }
         }
 
@@ -115,6 +133,15 @@ class DenunciaFragment : Fragment() {
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, PICK_IMAGE_REQUEST)
     }
+
+    fun clearFields() {
+        storeImageView.setImageDrawable(null)
+        storeTituloEditText.text.clear()
+        storeDescricaoEditText.text.clear()
+        storeEnderecoEditText.text.clear()
+        switchDenunciaAnonima.isChecked = true
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -144,19 +171,21 @@ class DenunciaFragment : Fragment() {
     }
 
     private fun registerStore(imageUrl: String) {
-        val name = storeNameEditText.text.toString()
-        val denuncia = storeDescricaoEditText.text.toString()
+        val titulo = storeTituloEditText.text.toString()
+        val descricao = storeDescricaoEditText.text.toString()
         val endereco = storeEnderecoEditText.text.toString()
         val anonima = switchDenunciaAnonima.isChecked
 
-        if (name.isEmpty() || denuncia.isEmpty() || endereco.isEmpty()) {
+        if (titulo.isEmpty() || descricao.isEmpty() || endereco.isEmpty()) {
             Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
                 .show()
             return
         }
         var user = MainActivity.usuarioLogado
-        val store = Item("", name, denuncia,"", imageUrl, endereco, user?.uid.toString(),anonima,
-            0.0,0.0, "")
+        val store = Item(
+            "", titulo, descricao, "", imageUrl, endereco, user?.uid.toString(), anonima,
+            0.0, 0.0, ""
+        )
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val storesReference: DatabaseReference = database.getReference("denuncias")
@@ -184,7 +213,11 @@ class DenunciaFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Erro ao verificar referência 'denuncias'", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    "Erro ao verificar referência 'denuncias'",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         })
@@ -198,17 +231,19 @@ class DenunciaFragment : Fragment() {
                 .addOnSuccessListener {
                     Toast.makeText(context, "Denúncia cadastrada com sucesso!", Toast.LENGTH_SHORT)
                         .show()
-                    requireActivity().supportFragmentManager.popBackStack()
+                    clearFields()
+                    // Seleciona o item do menu de navegacao
+                    val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                    bottomNavigationView.selectedItemId = R.id.navigation_pesquisar
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Falha ao cadastrar a denúncia", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Falha ao cadastrar a denúncia", Toast.LENGTH_SHORT)
+                        .show()
                 }
         } else {
             Toast.makeText(context, "Erro ao gerar o ID da denúncia", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,8 +267,6 @@ class DenunciaFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 
 
 }

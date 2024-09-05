@@ -12,7 +12,7 @@ android {
         applicationId = "com.ifpr.app_reuse"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
+        versionCode = 4
         versionName = "Capitão Planeta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -72,6 +72,7 @@ dependencies {
     implementation (libs.firebase.messaging)
     implementation (libs.play.services.maps)
     implementation (libs.play.services.location)
+    implementation(libs.androidx.recyclerview)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -28,9 +28,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.ifpr.app_reuse.R
+import com.ifpr.app_reuse.baseclasses.Coleta
+import com.ifpr.app_reuse.baseclasses.ColetaAdapter
 import com.ifpr.app_reuse.baseclasses.Item
+import com.ifpr.app_reuse.baseclasses.ItemColeta
 import com.ifpr.app_reuse.baseclasses.StoreAdapter
-import com.ifpr.app_reuse.databinding.FragmentHomeBinding
+import com.ifpr.app_reuse.databinding.FragmentPesquisaBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +42,7 @@ import java.util.Locale
 
 class PesquisaFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentPesquisaBinding? = null
     private lateinit var recyclerViewStores: RecyclerView
     private lateinit var storeAdapter: StoreAdapter
     private lateinit var currentAddressTextView: TextView
@@ -48,6 +51,9 @@ class PesquisaFragment : Fragment() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
 
+    private lateinit var recyclerViewColetas: RecyclerView
+    private lateinit var coletaAdapter: ColetaAdapter
+    private val coletas = mutableListOf<Coleta>() // Lista para armazenar as coletas
 
 
     companion object {
@@ -64,12 +70,18 @@ class PesquisaFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentPesquisaBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         currentAddressTextView = root.findViewById(R.id.currentAddressTextView)
-        recyclerViewStores = root.findViewById(R.id.recyclerViewPostagens)
+        recyclerViewStores = root.findViewById(R.id.recyclerViewDenuncias)
         recyclerViewStores.layoutManager = LinearLayoutManager(context)
+
+        recyclerViewColetas = root.findViewById(R.id.recyclerViewColetas)
+        recyclerViewColetas.layoutManager = LinearLayoutManager(context)
+
+
+
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -87,6 +99,11 @@ class PesquisaFragment : Fragment() {
         } else {
             getCurrentLocation()
         }
+
+
+
+
+
 
         return root
     }
@@ -119,6 +136,43 @@ class PesquisaFragment : Fragment() {
                 ).show()
             }
         }
+    }
+
+    private fun loadColetas() {
+        database.child("coletas").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                coletas.clear()
+                for (snapshot in dataSnapshot.children) {
+                    val coleta = snapshot.getValue(Item::class.java)
+
+                    // Extrair manualmente a lista de itens
+                    val itensList = mutableListOf<ItemColeta>()
+                    val itensSnapshot = snapshot.child("itens")
+                    for (itemSnapshot in itensSnapshot.children) {
+                        val itemColeta = itemSnapshot.getValue(ItemColeta::class.java)
+                        itemColeta?.let { itensList.add(it) }
+                    }
+
+                    coleta?.let {
+                        val coleta =
+                            Coleta(it.userId,it.titulo, it.endereco, it.descricao, it.imageUrl, itensList)
+                        coletas.add(coleta)
+                    }
+                }
+                coletaAdapter = ColetaAdapter(coletas)
+                recyclerViewColetas.adapter = coletaAdapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    context,
+                    "Failed to load coletas: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+
+
     }
 
 
@@ -154,6 +208,8 @@ class PesquisaFragment : Fragment() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             fetchStores(null)
+            // Carregar coletas do Firebase
+            loadColetas()
             return
         }
 
@@ -162,22 +218,25 @@ class PesquisaFragment : Fragment() {
                 locationResult.lastLocation?.let { location ->
                     displayAddress(location)
                     fetchStores(location)
+                    // Carregar coletas do Firebase
+                    loadColetas()
                 }
             }
         }
 
         locationRequest = LocationRequest.create().apply {
             interval = 60000 // Intervalo em milissegundos para atualizações de localização
-            fastestInterval = 60000 // O menor intervalo de tempo que você deseja receber atualizações de localização
+            fastestInterval =
+                60000 // O menor intervalo de tempo que você deseja receber atualizações de localização
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
             locationCallback,
-            Looper.getMainLooper())
+            Looper.getMainLooper()
+        )
     }
-
-
 
 
     private fun displayAddress(location: Location) {

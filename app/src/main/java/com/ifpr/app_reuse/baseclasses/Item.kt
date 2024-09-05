@@ -2,7 +2,7 @@ package com.ifpr.app_reuse.baseclasses
 
 data class Item(
     val cnpj: String = "",
-    val name: String = "",
+    val titulo: String = "",
     val descricao: String = "",
     val email: String = "",
     val imageUrl: String = "",

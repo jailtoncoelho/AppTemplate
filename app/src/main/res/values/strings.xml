@@ -2,6 +2,7 @@
     <string name="app_name">Re-USE</string>
     <string name="title_home">Home</string>
     <string name="title_denuncia">Denúncia</string>
+    <string name="title_coleta_seletiva">Solicitação de Coleta</string>
     <string name="title_pesquisar">Pesquisar</string>
     <string name="title_chat">Chat</string>
     <string name="title_login">Login</string>
@@ -20,6 +21,14 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="default_web_client_id">"KEY"</string>
+
+
+    <string name="select_category">Escolha a categoria</string>
+    <string name="enter_quantity">Quantidade</string>
+    <string name="unit_litre">Litros</string>
+    <string name="unit_kg">Kg</string>
+    <string name="unit_unit">Unidade</string>
+    <string name="add_item">Adicionar Item</string>
 
 
     <string-array name="anos_array">

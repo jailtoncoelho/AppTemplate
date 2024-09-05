@@ -89,7 +89,6 @@ class PerfilUsuarioFragment : Fragment() {
             "Logout realizado com sucesso!",
             Toast.LENGTH_SHORT
         ).show()
-        MainActivity.usuarioLogado = null
 
         requireActivity().finish()
     }

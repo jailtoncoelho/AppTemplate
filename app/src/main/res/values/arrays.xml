@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="item_categories">
+        <item>Plástico</item>
+        <item>Vidro</item>
+        <item>Pilhas</item>
+        <item>Orgânicos</item>
+        <item>Outros</item>
+    </string-array>
+</resources>

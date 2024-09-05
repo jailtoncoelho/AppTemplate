@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.pesquisa.PesquisaFragment">
 
-
+    <!-- TextView fixo no topo da tela -->
     <TextView
         android:id="@+id/currentAddressTextView"
         android:layout_width="match_parent"
@@ -17,16 +17,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPostagens"
+    <!-- ScrollView com o restante do conteúdo -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/currentAddressTextView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currentAddressTextView" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <TextView
+                android:id="@+id/text_coletas_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@color/green_500"
+                android:text="Coletas"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+
+            <!-- RecyclerView para exibir as coletas -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewColetas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/text_denuncia_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@color/green_500"
+                android:text="Denúncias"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp" />
+
+            <!-- RecyclerView para exibir as denúncias -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewDenuncias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

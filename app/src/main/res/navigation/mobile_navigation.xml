@@ -3,13 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobileNavigationView"
-    app:startDestination="@+id/navigation_denuncia">
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.ifpr.app_reuse.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_coletaSeletivaFragment"
+            app:destination="@id/navigation_coleta" />
+        <action
+            android:id="@+id/action_homeFragment_to_denunciaFragment"
+            app:destination="@id/navigation_denuncia" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_denuncia"
         android:name="com.ifpr.app_reuse.ui.denuncia.DenunciaFragment"
         android:label="@string/title_denuncia"
         tools:layout="@layout/fragment_denuncia" />
+
+    <fragment
+        android:id="@+id/navigation_coleta"
+        android:name="com.ifpr.app_reuse.ui.coleta.ColetaSeletivaFragment"
+        android:label="@string/title_coleta_seletiva"
+        tools:layout="@layout/fragment_coleta_seletiva" />
 
     <fragment
         android:id="@+id/navigation_pesquisar"

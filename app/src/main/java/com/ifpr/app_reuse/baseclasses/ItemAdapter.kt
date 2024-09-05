@@ -29,15 +29,15 @@ class StoreAdapter(
 
     override fun onBindViewHolder(holder: StoreViewHolder, position: Int) {
         val denuncia = storeList[position]
-        holder.storeNameTextView.text = denuncia.name
-        holder.storeEnderecoTextView.text = denuncia.endereco
+        holder.denunciaTituloTextView.text = denuncia.titulo
+        holder.denunciaEnderecoTextView.text = denuncia.endereco
         holder.denunciaDescricaoTextView.text = denuncia.descricao
-        holder.storeDistanceTextView.text = getDistanceToStore(denuncia)
+        holder.denunciaDistanceTextView.text = getDistanceToStore(denuncia)
 
-        if (holder.storeDistanceTextView.text.isEmpty()) {
-            holder.storeDistanceTextView.visibility = View.GONE
+        if (holder.denunciaDistanceTextView.text.isEmpty()) {
+            holder.denunciaDistanceTextView.visibility = View.GONE
         } else {
-            holder.storeDistanceTextView.visibility = View.VISIBLE
+            holder.denunciaDistanceTextView.visibility = View.VISIBLE
         }
 
         // Ajustar a visibilidade do ícone do mapa
@@ -49,7 +49,7 @@ class StoreAdapter(
             holder.wazeIconImageView.visibility = View.GONE
         }
         holder.mapIconImageView.setOnClickListener {
-            val endereco = holder.storeEnderecoTextView.text.toString()
+            val endereco = holder.denunciaEnderecoTextView.text.toString()
             val gmmIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
@@ -59,7 +59,7 @@ class StoreAdapter(
         }
 
         holder.wazeIconImageView.setOnClickListener {
-            val endereco = holder.storeEnderecoTextView.text.toString()
+            val endereco = holder.denunciaEnderecoTextView.text.toString()
             val wazeUri = Uri.parse("https://waze.com/ul?q=${Uri.encode(endereco)}")
             val wazeIntent = Intent(Intent.ACTION_VIEW, wazeUri)
             wazeIntent.setPackage("com.waze")
@@ -70,9 +70,9 @@ class StoreAdapter(
             }
         }
 
-        Glide.with(holder.storeImageView.context)
+        Glide.with(holder.denunciaImageView.context)
             .load(denuncia.imageUrl)
-            .into(holder.storeImageView)
+            .into(holder.denunciaImageView)
     }
 
 
@@ -104,11 +104,11 @@ class StoreAdapter(
     }
 
     class StoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val storeImageView: ImageView = itemView.findViewById(R.id.storeImageView)
-        val storeNameTextView: TextView = itemView.findViewById(R.id.denunciaTituloTextView)
+        val denunciaImageView: ImageView = itemView.findViewById(R.id.denunciaImageView)
+        val denunciaTituloTextView: TextView = itemView.findViewById(R.id.denunciaTituloTextView)
         val denunciaDescricaoTextView: TextView = itemView.findViewById(R.id.denunciaDescricaoTextView)
-        val storeEnderecoTextView: TextView = itemView.findViewById(R.id.denunciaEnderecoTextView)
-        val storeDistanceTextView: TextView = itemView.findViewById(R.id.storeDistanceTextView)
+        val denunciaEnderecoTextView: TextView = itemView.findViewById(R.id.denunciaEnderecoTextView)
+        val denunciaDistanceTextView: TextView = itemView.findViewById(R.id.storeDistanceTextView)
         val mapIconImageView: ImageView = itemView.findViewById(R.id.mapIconImageView)
         val wazeIconImageView: ImageView = itemView.findViewById(R.id.wazeIconImageView)
     }
